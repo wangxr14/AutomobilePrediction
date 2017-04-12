@@ -17,7 +17,7 @@ def login(request):
     return render(request, 'login.html')
 	
 def loginWithFace(request):
-	
+	photourl = request.GET.get('photourl','')
  
 	return render(request, 'login_face.html')
 
@@ -111,7 +111,7 @@ def renderResult(request):
 		
 		resultlist = json.loads(result).get("Results").get("output1").get("value").get("Values")[0]
 		length = len(resultlist)
-		result = resultlist[length-2]
+		result = resultlist[length-1]
 		
 	except urllib2.HTTPError, error:
 		print("The request failed with status code: " + str(error.code))
