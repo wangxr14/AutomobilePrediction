@@ -8,18 +8,9 @@
 
 <h4>Serach Page<h4>
 
-<p class="pos_2"><br>Keyword : {{ keyword }}</br></p>
+<p class="pos_2"><br>The price: </br></p>
 {{result}}
-<table border="1" class="pos_abs">
- <tr><th>ID</th><th>Name</th><th>Price</th></tr>
-    {% for item in answerlist %}
-    <tr>
-      <td>{{ item.ID }}</td>
-      <td><a href="/coauthor/?id={{ item.ID }}">{{ item.name }}</a></td>   
-      <td>{{ item.hi }}</td>
-  </tr>
-{% endfor %}
-</table>
+
 
 </body>
 </html>

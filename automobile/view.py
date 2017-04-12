@@ -98,7 +98,7 @@ def renderResult(request):
 	headers = {'Content-Type':'application/json', 'Authorization':('Bearer '+ api_key)}
 
 	req = urllib2.Request(url, body, headers) 
-
+	result = ''
 	try:
 		response = urllib2.urlopen(req)
 
@@ -107,7 +107,11 @@ def renderResult(request):
 		# response = urllib.request.urlopen(req)
 
 		result = response.read()
-		print(result) 
+		
+		resultlist = json.loads(result).get("Results").get("output1").get("value").get("Values")[0]
+		length = len(resultlist)
+		result = resultlist[length-2]
+		
 	except urllib2.HTTPError, error:
 		print("The request failed with status code: " + str(error.code))
 
