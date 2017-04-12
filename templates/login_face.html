@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Login</title>
+  <link href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+  <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+
+<body>
+<br>
+<h4>Login<h4>
+<br>
+<div id="contentHolder">       
+<video id="video" autoplay=""style='width:640px;height:480px'></video>  
+     <button id="paizhao">拍照</button>   
+     <canvas id="canvas" width="640" height="480"></canvas>
+   </div>
+</body>
+
+
+<script type="text/javascript">  
+         var video=document.getElementById("video");  
+         var context=canvas.getContext("2d");  
+         var errocb=function(){  
+             console.log("sth srong");  
+         }  
+         if(navigator.getUserMedia){  
+             navigator.getUserMedia({"video":true},function(stream){  
+                 video.src=stream;  
+                 video.play();  
+             },errocb);  
+         }else if(navigator.webkitGetUserMedia){  
+             navigator.webkitGetUserMedia({"video":true},function(stream){  
+                 video.src=window.webkitURL.createObjectURL(stream);  
+                 video.play();  
+             },errocb);  
+         }  
+         document.getElementById("paizhao").addEventListener("click",function(){  
+             context.drawImage(video,0,0,640,480);  
+         });  
+     </script>  
+
+</html>

@@ -6,6 +6,7 @@ import urllib2
 import json
 import types
 
+
 subscriptionKey = 'eb08b2853536476ea05335d5dd269293' 
 #My group ID
 personGroupId = 'wxr2014011300'
@@ -17,8 +18,8 @@ def login(request):
 	
 def loginWithFace(request):
 	
-
-	return render(request, 'redirect_back.html')
+ 
+	return render(request, 'login_face.html')
 
 def signUp(request):
 	username = request.GET.get('username','')
