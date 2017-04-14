@@ -7,29 +7,90 @@ import json
 import types
 
 
-subscriptionKey = 'eb08b2853536476ea05335d5dd269293' 
+subscriptionKey = 'ff3211903f88418a84f773c333b95ecd' 
 #My group ID
 personGroupId = 'wxr2014011300'
-
+personlist = []
+persistedFaceList = []
 FaceURL = 'westus.api.cognitive.microsoft.com'
 
+headers = {
+		# Request headers
+		'Content-Type': 'application/json',
+		'Ocp-Apim-Subscription-Key': subscriptionKey,
+	}
+	
 def login(request):
     return render(request, 'login.html')
 	
 def loginWithFace(request):
 	photourl = request.GET.get('photourl','')
- 
-	return render(request, 'login_face.html')
+	
+	#Get the user's present face ID
+	faceID = ''
+	tmp = ''
+	params = urllib.urlencode({
+    'returnFaceId': 'true',
+    'returnFaceLandmarks': 'false',
+    'returnFaceAttributes': 'age,gender',
+})
+	body ={'url':photourl}
+	try:
+		conn = httplib.HTTPSConnection(FaceURL)
+		conn.request("POST", "/face/v1.0/detect?%s" % params, json.dumps(body), headers)
+		response = conn.getresponse()
+		data = response.read()
+		tmp = data
+		conn.close()
+		faceID = json.loads(data)[0].get("faceId")
+		
+	except Exception as e:
+		print e
+		
+		
+	#Get person list
+	personlist = []
+	body ={}
+	data1=''
+	params = urllib.urlencode({})
+	try:
+		conn = httplib.HTTPSConnection(FaceURL)
+		conn.request("GET", ("/face/v1.0/persongroups/"+personGroupId+"/persons?%s") % params, json.dumps(body), headers)
+		response = conn.getresponse()
+		data1 = response.read()
+		conn.close()
+		
+		personlist = json.loads(data1)
+		
+	except Exception as e:
+		print e
+	
+	#verify
+	isIdentical = ''
+	for i in personlist:
+		pId = i.get("personId")
+		body = {"faceId":faceID,"personId":pId,"personGroupId":personGroupId}
+		data = '' 
+		try:
+			conn = httplib.HTTPSConnection(FaceURL)
+			conn.request("POST", "/face/v1.0/verify?%s" % params, json.dumps(body), headers)
+			response = conn.getresponse()
+			data = response.read()
+			isIdentical = json.loads(data).get("isIdentical")		
+			if(isIdentical): 
+				break
+			conn.close()
+		except Exception as e:
+			print e
+	
+	return render(request, 'login_face.html',{"personlist":personlist,"faceList":tmp,"isIdentical":data})
 
 def signUp(request):
 	username = request.GET.get('username','')
 	photourl = request.GET.get('photourl','')
 	
-	headers = {
-		# Request headers
-		'Content-Type': 'application/json',
-		'Ocp-Apim-Subscription-Key': subscriptionKey,
-	}
+	
+	
 
 	params = urllib.urlencode({})
 
@@ -42,8 +103,11 @@ def signUp(request):
 		conn.request("POST", ("/face/v1.0/persongroups/"+personGroupId+"/persons?%s") % params, json.dumps(body), headers)
 		response = conn.getresponse()
 		data = response.read()
-		personId = json.loads(data).get("personId")
+		personId = json.loads(data).get("personId")		
 		conn.close()
+		
+		f = open("personlist.txt")
+		f.write(personId +'\n')
 	except Exception as e:
 		print e
 		data = e
@@ -59,9 +123,12 @@ def signUp(request):
 		data = response.read()
 		persistedFaceId = json.loads(data).get("persistedFaceId")
 		conn.close()
+		
+		f = open("facelist.txt")
+		f.write(persistedFaceId +'\n')
 	except Exception as e:
 		print e	
-	return render(request, 'sign_up.html',{'data':persistedFaceId})
+	return render(request, 'sign_up.html',{'person':personId,'data':persistedFaceId})
 	
 def renderSearchPage(request):
 	
