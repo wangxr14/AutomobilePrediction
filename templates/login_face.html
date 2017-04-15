@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
@@ -10,41 +10,82 @@
 
 
 <body>
+
 <br>
 <h4>Login<h4>
-<br>
-person list {{personlist}}
-<br>
-face list {{faceList}}
-is Identical  {{isIdentical}}
+
 <div id="contentHolder">       
-<video id="video" autoplay=""style='width:640px;height:480px'></video>  
-     <button id="paizhao">拍照</button>   
-     <canvas id="canvas" width="640" height="480"></canvas>
-   </div>
+	<video id="video" autoplay="" style='width:640px;height:480px'></video>  
+    <button id="paizhao">Shot</button>   
+	<canvas id="canvas" width="640" height="480"></canvas>
+
+	<form method="post" action="/search_page/">
+	{% csrf_token %}
+		<textarea hidden="hidden" id="shotData" name="photourl"></textarea>
+		<input type="hidden" name="mode" value="shot"/>
+		<button class="btn btn-primary" id="loginWithPhotoBtn">Login Now</button>
+	</form>
+</div>
+
+<form method="post" action="/search_page/">
+{% csrf_token %}
+	<input type="text" name="photourl" class="pos_abs">Your photo</input>	
+	<input type="hidden" name="mode" value="photo"/>
+	<button class="btn btn-primary" id="loginWithPhotoBtn">Login with Photo</button>
+</form>
+
 </body>
 
 
 <script type="text/javascript">  
+
          var video=document.getElementById("video");  
          var context=canvas.getContext("2d");  
          var errocb=function(){  
              console.log("sth srong");  
          }  
+		 console.log(""+navigator.mediaDevices.getUserMedia);
          if(navigator.getUserMedia){  
-             navigator.getUserMedia({"video":true},function(stream){  
+             navigator.getUserMedia({ "video": true },function(stream){  
                  video.src=stream;  
-                 video.play();  
+                 video.play();
+					console.log("get media");
              },errocb);  
-         }else if(navigator.webkitGetUserMedia){  
-             navigator.webkitGetUserMedia({"video":true},function(stream){  
-                 video.src=window.webkitURL.createObjectURL(stream);  
-                 video.play();  
+         }
+		 else if(navigator.webkitGetUserMedia){  
+				 navigator.webkitGetUserMedia({ "video": true },function(stream){ 
+					 console.log(""+stream);
+					 video.src=window.webkitURL.createObjectURL(stream);  
+					 video.play();  
+					 
+				 },errocb);  
+		}  
+		else if(navigator.mozGetUserMedia) { // Firefox-prefixed
+                navigator.mozGetUserMedia({ "video": true }, function(stream){
+                    video.src = window.URL.createObjectURL(stream);
+                    video.play();
+                }, errocb);
+            }
+		else if(navigator.mediaDevices.getUserMedia){
+			 navigator.mediaDevices.getUserMedia({ "video": true },function(stream){  
+                 video.src=window.URL.createObjectURL(stream);  
+                 video.play();
+					console.log("get media");
              },errocb);  
-         }  
+		}
+		else{
+				alert("Your browser does not support using camera to take shots!")
+		 }
+
          document.getElementById("paizhao").addEventListener("click",function(){  
-             context.drawImage(video,0,0,640,480);  
+			context.drawImage(video,0,0,640,480);  
+			var imgData=canvas.toDataURL();
+			imgData = imgData.substring(22);
+			alert(imgData);
+			var shotData = document.getElementById("shotData");
+			shotData.value=imgData;
+			console.log(shotData.value);
          });  
-     </script>  
+ </script>  
 
 </html>

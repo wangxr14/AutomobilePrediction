@@ -1,3 +1,4 @@
+﻿# -*- coding: utf-8 -*
 from django.http import HttpResponse
 from django.shortcuts import render
  
@@ -5,7 +6,9 @@ import httplib, urllib, base64
 import urllib2
 import json
 import types
-
+import base64
+from django.template import RequestContext
+import logging
 
 subscriptionKey = 'ff3211903f88418a84f773c333b95ecd' 
 #My group ID
@@ -24,66 +27,8 @@ def login(request):
     return render(request, 'login.html')
 	
 def loginWithFace(request):
-	photourl = request.GET.get('photourl','')
 	
-	#Get the user's present face ID
-	faceID = ''
-	tmp = ''
-	params = urllib.urlencode({
-    'returnFaceId': 'true',
-    'returnFaceLandmarks': 'false',
-    'returnFaceAttributes': 'age,gender',
-})
-	body ={'url':photourl}
-	try:
-		conn = httplib.HTTPSConnection(FaceURL)
-		conn.request("POST", "/face/v1.0/detect?%s" % params, json.dumps(body), headers)
-		response = conn.getresponse()
-		data = response.read()
-		tmp = data
-		conn.close()
-		faceID = json.loads(data)[0].get("faceId")
-		
-	except Exception as e:
-		print e
-		
-		
-	#Get person list
-	personlist = []
-	body ={}
-	data1=''
-	params = urllib.urlencode({})
-	try:
-		conn = httplib.HTTPSConnection(FaceURL)
-		conn.request("GET", ("/face/v1.0/persongroups/"+personGroupId+"/persons?%s") % params, json.dumps(body), headers)
-		response = conn.getresponse()
-		data1 = response.read()
-		conn.close()
-		
-		personlist = json.loads(data1)
-		
-	except Exception as e:
-		print e
-	
-	#verify
-	isIdentical = ''
-	for i in personlist:
-		pId = i.get("personId")
-		body = {"faceId":faceID,"personId":pId,"personGroupId":personGroupId}
-		data = '' 
-		try:
-			conn = httplib.HTTPSConnection(FaceURL)
-			conn.request("POST", "/face/v1.0/verify?%s" % params, json.dumps(body), headers)
-			response = conn.getresponse()
-			data = response.read()
-			isIdentical = json.loads(data).get("isIdentical")		
-			if(isIdentical): 
-				break
-			conn.close()
-		except Exception as e:
-			print e
-	
-	return render(request, 'login_face.html',{"personlist":personlist,"faceList":tmp,"isIdentical":data})
+	return render(request, 'login_face.html')
 
 def signUp(request):
 	username = request.GET.get('username','')
@@ -131,10 +76,77 @@ def signUp(request):
 	return render(request, 'sign_up.html',{'person':personId,'data':persistedFaceId})
 	
 def renderSearchPage(request):
+	photourl = request.POST.get('photourl','')
+	mode = request.POST.get('mode','')
 	
-	answerlist = []
+	url = ''
+	#Judge the mode 
+	if(mode == 'shot'):
+		url = base64.b64decode(photourl)
+		logging.debug(url)
+	elif(mode == 'photo'):
+		url = photourl
+	else:
+		url = ''
+	#Get the user's present face ID
+	faceID = ''
+	tmp = ''
+	params = urllib.urlencode({
+    'returnFaceId': 'true',
+    'returnFaceLandmarks': 'false',
+    'returnFaceAttributes': 'age,gender',
+	})
+	body ={'url':url}
+	try:
+		conn = httplib.HTTPSConnection(FaceURL)
+		conn.request("POST", "/face/v1.0/detect?%s" % params, json.dumps(body), headers)
+		response = conn.getresponse()
+		data = response.read()
+		tmp = data
+		conn.close()
+		faceID = json.loads(data)[0].get("faceId")
+		
+	except Exception as e:
+		print e
+		
+		
+	#Get person list
+	personlist = []
+	body ={}
+	data=''
+	params = urllib.urlencode({})
+	try:
+		conn = httplib.HTTPSConnection(FaceURL)
+		conn.request("GET", ("/face/v1.0/persongroups/"+personGroupId+"/persons?%s") % params, json.dumps(body), headers)
+		response = conn.getresponse()
+		data = response.read()
+		conn.close()
+		
+		personlist = json.loads(data)
+		
+	except Exception as e:
+		print e
 	
-	return render(request, 'searchPage.html')
+	#verify
+	isIdentical = ''
+	data = ''
+	for i in personlist:
+		pId = i.get("personId")
+		body = {"faceId":faceID,"personId":pId,"personGroupId":personGroupId}
+		data = '' 
+		try:
+			conn = httplib.HTTPSConnection(FaceURL)
+			conn.request("POST", "/face/v1.0/verify?%s" % params, json.dumps(body), headers)
+			response = conn.getresponse()
+			data = response.read()
+			isIdentical = json.loads(data).get("isIdentical")		
+			if(isIdentical): 
+				break
+			conn.close()
+		except Exception as e:
+			print e
+	
+	return render(request, 'searchPage.html',{"personlist":personlist,"faceList":url,"isIdentical":data})
 
 def renderResult(request):
 	make = request.GET.get('make','')
