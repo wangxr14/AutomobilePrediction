@@ -65,7 +65,11 @@ def signUp(request):
 		
 	if(mode == "signup"):		
 		#Get Persisted ID 
-		body = {'url':photourl}
+		imgData = base64.b64decode(photourl)
+		file = open('/pic.png','wb')
+		file.write(imgData)
+		file.close()
+		body = {'url':imgUrl}
 		data = {}
 		 
 		try:
@@ -76,8 +80,6 @@ def signUp(request):
 			persistedFaceId = json.loads(data).get("persistedFaceId")
 			conn.close()
 			
-			f = open("facelist.txt")
-			f.write(persistedFaceId +'\n')
 		except Exception as e:
 			print e	
 	return render(request, 'sign_up.html',{'person':personId,'data':persistedFaceId})
@@ -99,7 +101,7 @@ def renderSearchPage(request):
 		
 	#Judge the mode 
 	if(mode == 'shot'):
-		headers = {	'Content-Type': 'application/octet-stream', 'Ocp-Apim-Subscription-Key': subscriptionKey}
+		headers = {	'Content-Type': 'application/json', 'Ocp-Apim-Subscription-Key': subscriptionKey}
 		imgData = base64.b64decode(photourl)
 		file = open('/pic.png','wb')
 		file.write(imgData)
