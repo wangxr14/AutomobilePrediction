@@ -79,7 +79,7 @@ def signUp(request):
 			
 		except Exception as e:
 			print e	
-	return render(request, 'sign_up.html',{'person':personId,'data':persistedFaceId})
+	return render(request, 'sign_up.html',{'person':username,'data':persistedFaceId})
 	
 def renderSearchPage(request):
 	photourl = request.POST.get('photourl','')

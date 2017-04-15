@@ -15,7 +15,8 @@
 	<button class="btn btn-primary" id="loginWithFaceBtn">Login with Face</button>
 </form>
 <br>OR<br>
-<form method="GET" action="/sign_up">
+<form method="POST" action="/sign_up">
+{% csrf_token %}
 	<input type="hidden" name="mode" value="signup"/>
 	<button class="btn btn-primary" id="loginWithFaceBtn">Sign Up</button>
 </form>
