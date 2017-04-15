@@ -176,7 +176,7 @@ def renderSearchPage(request):
 		return render(request, 'searchPage.html',{"personlist":personlist,"faceList":tmp,"isIdentical":data})
 	else:
 		
-		return render(request, 'login_face.html',{"logininfo":"login failed!"+tmp})
+		return render(request, 'login_face.html',{"logininfo":"login failed!"+data+'     '+tmp})
 		
 def renderResult(request):
 	make = request.GET.get('make','')
