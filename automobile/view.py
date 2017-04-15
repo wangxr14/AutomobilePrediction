@@ -17,7 +17,8 @@ personGroupId = 'wxr2014011300'
 personlist = []
 persistedFaceList = []
 FaceURL = 'westus.api.cognitive.microsoft.com'
-imgUrl = 'http://168.63.209.202/pic.png'
+imgUrl = 'http://127.0.0.1:8000/pic.png'
+picUrl = 'pic.png'
 
 headers = {
 		# Request headers
@@ -37,8 +38,8 @@ def signUpWithFace(request):
 	return render(request, 'sign_up.html')
 	
 def signUp(request):
-	username = request.GET.get('username','')
-	photourl = request.GET.get('photourl','')
+	username = request.POST.get('username','')
+	photourl = request.POST.get('photourl','')
 	mode = request.POST.get('mode','')
 	
 	data = {}
@@ -63,7 +64,7 @@ def signUp(request):
 	if(mode == "signup"):		
 		#Get Persisted ID 
 		imgData = base64.b64decode(photourl)
-		file = open('/pic.png','wb')
+		file = open(picUrl,'wb')
 		file.write(imgData)
 		file.close()
 		body = {'url':imgUrl}
@@ -79,7 +80,7 @@ def signUp(request):
 			
 		except Exception as e:
 			print e	
-	return render(request, 'sign_up.html',{'person':username,'data':persistedFaceId})
+	return render(request, 'sign_up.html',{'person':mode,'data':persistedFaceId})
 	
 def renderSearchPage(request):
 	photourl = request.POST.get('photourl','')
@@ -100,7 +101,7 @@ def renderSearchPage(request):
 	if(mode == 'shot'):
 		headers = {	'Content-Type': 'application/json', 'Ocp-Apim-Subscription-Key': subscriptionKey}
 		imgData = base64.b64decode(photourl)
-		file = open('/pic.png','wb')
+		file = open(picUrl,'wb')
 		file.write(imgData)
 		file.close()
 		body ={'url':imgUrl}
@@ -231,5 +232,5 @@ def renderResult(request):
         return render(request, 'result.html',{'result':result})
 
 def getPic(request):
-	image_data = open("/pic.png","rb").read()
+	image_data = open(picUrl,"rb").read()
 	return HttpResponse(image_data,content_type="image/png")
