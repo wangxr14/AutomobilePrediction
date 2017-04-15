@@ -56,9 +56,6 @@ def signUp(request):
 		data = response.read()
 		personId = json.loads(data).get("personId")		
 		conn.close()
-		
-		f = open("personlist.txt")
-		f.write(personId +'\n')
 	except Exception as e:
 		print e
 		data = e
