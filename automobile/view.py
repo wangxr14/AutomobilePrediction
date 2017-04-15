@@ -17,8 +17,8 @@ personGroupId = 'wxr2014011300'
 personlist = []
 persistedFaceList = []
 FaceURL = 'westus.api.cognitive.microsoft.com'
-imgUrl = 'http://127.0.0.1:8000/pic.png'
-picUrl = 'pic.png'
+imgUrl = 'http://168.63.209.202/pic.png'
+picUrl = '/pic.png'
 
 headers = {
 		# Request headers
