@@ -11,16 +11,75 @@
 <body>
 <br><br><br>
 <div class="container">
-<form method="GET" action="/sign_up">
-<h2 class="pos_abs"> Sign Up Now </h2>
-    <input type="text" name="username" class="pos_abs">User name</input>
-	<input type="text" name="photourl" class="pos_abs">Your photo</input>
-	<input type="hidden" name="mode" value="signup"/>
-    <input type="submit" class="pos_abs2"/>
-</form>
+	<div id="contentHolder">       
+		<video id="video" autoplay="" style='width:640px;height:480px'></video>  
+		<button id="paizhao">Shot</button>   
+		<canvas id="canvas" width="640" height="480"></canvas>
+
+		<form method="post" action="/sign_up/">
+		{% csrf_token %}
+		<textarea hidden="hidden" id="shotData" name="photourl"></textarea>
+		<h2 class="pos_abs"> Sign Up Now </h2>
+		<input type="text" name="username" class="pos_abs">User name</input>
+		<input type="hidden" name="mode" value="signup"/>
+		<input type="submit" class="pos_abs2"/>
+		</form>
+	</div>
+
+
 <form method="GET" action="/">
 	<button class="btn btn-primary" id="backBtn">Back</button>
 </form>	
 </div>
 </body>
+<script type="text/javascript">  
+
+         var video=document.getElementById("video");  
+         var context=canvas.getContext("2d");  
+         var errocb=function(){  
+             console.log("sth srong");  
+         }  
+		 console.log(""+navigator.mediaDevices.getUserMedia);
+         if(navigator.getUserMedia){  
+             navigator.getUserMedia({ "video": true },function(stream){  
+                 video.src=stream;  
+                 video.play();
+					console.log("get media");
+             },errocb);  
+         }
+		 else if(navigator.webkitGetUserMedia){  
+				 navigator.webkitGetUserMedia({ "video": true },function(stream){ 
+					 console.log(""+stream);
+					 video.src=window.webkitURL.createObjectURL(stream);  
+					 video.play();  
+					 
+				 },errocb);  
+		}  
+		else if(navigator.mozGetUserMedia) { // Firefox-prefixed
+                navigator.mozGetUserMedia({ "video": true }, function(stream){
+                    video.src = window.URL.createObjectURL(stream);
+                    video.play();
+                }, errocb);
+            }
+		else if(navigator.mediaDevices.getUserMedia){
+			 navigator.mediaDevices.getUserMedia({ "video": true },function(stream){  
+                 video.src=window.URL.createObjectURL(stream);  
+                 video.play();
+					console.log("get media");
+             },errocb);  
+		}
+		else{
+				alert("Your browser does not support using camera to take shots!")
+		 }
+
+         document.getElementById("paizhao").addEventListener("click",function(){  
+			context.drawImage(video,0,0,640,480);  
+			var imgData=canvas.toDataURL();
+			imgData = imgData.substring(22);
+			//alert(imgData);
+			var shotData = document.getElementById("shotData");
+			shotData.value=imgData;
+			console.log(shotData.value);
+         });  
+ </script>  
 </html>	

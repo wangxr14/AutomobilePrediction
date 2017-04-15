@@ -32,6 +32,10 @@ def loginWithFace(request):
 	
 	return render(request, 'login_face.html')
 
+def signUpWithFace(request):
+	
+	return render(request, 'sign_up.html')
+	
 def signUp(request):
 	username = request.GET.get('username','')
 	photourl = request.GET.get('photourl','')
@@ -39,6 +43,7 @@ def signUp(request):
 	
 	data = {}
 	personId = "" 
+	persistedFaceId = ""
 	params = urllib.urlencode({})
 
 	#Get person ID
@@ -62,7 +67,7 @@ def signUp(request):
 		#Get Persisted ID 
 		body = {'url':photourl}
 		data = {}
-		persistedFaceId = "" 
+		 
 		try:
 			conn = httplib.HTTPSConnection(FaceURL)
 			conn.request("POST", ("/face/v1.0/persongroups/"+personGroupId+"/persons/"+personId+"/persistedFaces?%s") % params, json.dumps(body), headers)
@@ -96,7 +101,7 @@ def renderSearchPage(request):
 	if(mode == 'shot'):
 		headers = {	'Content-Type': 'application/octet-stream', 'Ocp-Apim-Subscription-Key': subscriptionKey}
 		imgData = base64.b64decode(photourl)
-		file = open('pic.png','wb')
+		file = open('/pic.png','wb')
 		file.write(imgData)
 		file.close()
 		body ={'url':imgUrl}
@@ -167,9 +172,12 @@ def renderSearchPage(request):
 			conn.close()
 		except Exception as e:
 			print e
-	
-	return render(request, 'searchPage.html',{"personlist":personlist,"faceList":tmp,"isIdentical":data})
-
+	if(isIdentical=='true'):
+		return render(request, 'searchPage.html',{"personlist":personlist,"faceList":tmp,"isIdentical":data})
+	else:
+		
+		return render(request, 'login_face.html',{"logininfo":"login failed!"+tmp})
+		
 def renderResult(request):
 	make = request.GET.get('make','')
 	bodystyle = request.GET.get('bodystyle','')
@@ -224,5 +232,5 @@ def renderResult(request):
         return render(request, 'result.html',{'result':result})
 
 def getPic(request):
-	image_data = open("pic.png","rb").read()
+	image_data = open("/pic.png","rb").read()
 	return HttpResponse(image_data,content_type="image/png")
