@@ -172,7 +172,7 @@ def renderSearchPage(request):
 			conn.close()
 		except Exception as e:
 			print e
-	if(isIdentical=='true'):
+	if(isIdentical==true):
 		return render(request, 'searchPage.html',{"personlist":personlist,"faceList":tmp,"isIdentical":data})
 	else:
 		
