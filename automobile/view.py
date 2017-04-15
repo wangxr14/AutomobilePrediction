@@ -17,6 +17,7 @@ personGroupId = 'wxr2014011300'
 personlist = []
 persistedFaceList = []
 FaceURL = 'westus.api.cognitive.microsoft.com'
+imgUrl = 'http://168.63.209.202/pic.png'
 
 headers = {
 		# Request headers
@@ -38,27 +39,26 @@ def signUp(request):
 	
 	data = {}
 	personId = "" 
+	params = urllib.urlencode({})
 
-	if(mode == "signup"):
-		params = urllib.urlencode({})
-
-		#Get person ID
-		body = {'name':username,'userData':'New User'}
+	#Get person ID
+	body = {'name':username,'userData':'New User'}
+	
+	try:
+		conn = httplib.HTTPSConnection(FaceURL)
+		conn.request("POST", ("/face/v1.0/persongroups/"+personGroupId+"/persons?%s") % params, json.dumps(body), headers)
+		response = conn.getresponse()
+		data = response.read()
+		personId = json.loads(data).get("personId")		
+		conn.close()
 		
-		try:
-			conn = httplib.HTTPSConnection(FaceURL)
-			conn.request("POST", ("/face/v1.0/persongroups/"+personGroupId+"/persons?%s") % params, json.dumps(body), headers)
-			response = conn.getresponse()
-			data = response.read()
-			personId = json.loads(data).get("personId")		
-			conn.close()
-			
-			f = open("personlist.txt")
-			f.write(personId +'\n')
-		except Exception as e:
-			print e
-			data = e
+		f = open("personlist.txt")
+		f.write(personId +'\n')
+	except Exception as e:
+		print e
+		data = e
 		
+	if(mode == "signup"):		
 		#Get Persisted ID 
 		body = {'url':photourl}
 		data = {}
@@ -82,16 +82,6 @@ def renderSearchPage(request):
 	mode = request.POST.get('mode','')
 	
 	url = ''
-	#Judge the mode 
-	if(mode == 'shot'):
-		headers = {	'Content-Type': 'application/octet-stream', 'Ocp-Apim-Subscription-Key': subscriptionKey}
-		url = base64.b64decode(photourl)
-		#url = photourl
-	elif(mode == 'photo'):
-		url = photourl
-	else:
-		url = ''
-	
 	#Get the user's present face ID
 	faceID = ''
 	tmp = ''
@@ -101,18 +91,45 @@ def renderSearchPage(request):
     'returnFaceAttributes': 'age,gender',
 	})
 	
-	body ={'url':url}
-	try:
-		conn = httplib.HTTPSConnection(FaceURL)
-		conn.request("POST", "/face/v1.0/detect?%s" % params, json.dumps(body), headers)
-		response = conn.getresponse()
-		data = response.read()
-		tmp = data
-		conn.close()
-		faceID = json.loads(data)[0].get("faceId")
 		
-	except Exception as e:
-		print e
+	#Judge the mode 
+	if(mode == 'shot'):
+		headers = {	'Content-Type': 'application/octet-stream', 'Ocp-Apim-Subscription-Key': subscriptionKey}
+		imgData = base64.b64decode(photourl)
+		file = open('pic.png','wb')
+		file.write(imgData)
+		file.close()
+		body ={'url':imgUrl}
+		try:
+			conn = httplib.HTTPSConnection(FaceURL)
+			conn.request("POST", "/face/v1.0/detect?%s" % params, json.dumps(body), headers)
+			response = conn.getresponse()
+			data = response.read()
+			tmp = data
+			conn.close()
+			faceID = json.loads(data)[0].get("faceId")
+			
+		except Exception as e:
+			print e
+	elif(mode == 'photo'):
+		url = photourl
+		body ={'url':url}
+		try:
+			conn = httplib.HTTPSConnection(FaceURL)
+			conn.request("POST", "/face/v1.0/detect?%s" % params, json.dumps(body), headers)
+			response = conn.getresponse()
+			data = response.read()
+			tmp = data
+			conn.close()
+			faceID = json.loads(data)[0].get("faceId")
+			
+		except Exception as e:
+			print e
+	else:
+		url = ''
+	
+	
+	
 		
 		
 	#Get person list
@@ -151,7 +168,7 @@ def renderSearchPage(request):
 		except Exception as e:
 			print e
 	
-	return render(request, 'searchPage.html',{"personlist":personlist,"faceList":url,"isIdentical":data})
+	return render(request, 'searchPage.html',{"personlist":personlist,"faceList":tmp,"isIdentical":data})
 
 def renderResult(request):
 	make = request.GET.get('make','')
@@ -206,3 +223,6 @@ def renderResult(request):
 		print(json.loads(error.read()))                 
         return render(request, 'result.html',{'result':result})
 
+def getPic(request):
+	image_data = open("pic.png","rb").read()
+	return HttpResponse(image_data,content_type="image/png")

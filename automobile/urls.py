@@ -24,4 +24,5 @@ urlpatterns = [
 	url(r'^sign_up/$',view.signUp),
 	url(r'^search_page/$',view.renderSearchPage),
 	url(r'^result/$',view.renderResult),
+	url(r'^pic.png/$',view.getPic),
 ]
