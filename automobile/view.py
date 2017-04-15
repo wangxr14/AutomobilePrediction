@@ -1,7 +1,7 @@
-﻿# -*- coding: utf-8 -*
+﻿#-*- coding: utf-8 -*
 from django.http import HttpResponse
 from django.shortcuts import render
- 
+import os
 import httplib, urllib, base64
 import urllib2
 import json
@@ -9,6 +9,7 @@ import types
 import base64
 from django.template import RequestContext
 import logging
+from io import BytesIO
 
 subscriptionKey = 'ff3211903f88418a84f773c333b95ecd' 
 #My group ID
@@ -33,46 +34,47 @@ def loginWithFace(request):
 def signUp(request):
 	username = request.GET.get('username','')
 	photourl = request.GET.get('photourl','')
+	mode = request.POST.get('mode','')
 	
-	
-	
-
-	params = urllib.urlencode({})
-
-	#Get person ID
-	body = {'name':username,'userData':'New User'}
 	data = {}
 	personId = "" 
-	try:
-		conn = httplib.HTTPSConnection(FaceURL)
-		conn.request("POST", ("/face/v1.0/persongroups/"+personGroupId+"/persons?%s") % params, json.dumps(body), headers)
-		response = conn.getresponse()
-		data = response.read()
-		personId = json.loads(data).get("personId")		
-		conn.close()
+
+	if(mode == "signup"):
+		params = urllib.urlencode({})
+
+		#Get person ID
+		body = {'name':username,'userData':'New User'}
 		
-		f = open("personlist.txt")
-		f.write(personId +'\n')
-	except Exception as e:
-		print e
-		data = e
-	
-	#Get Persisted ID 
-	body = {'url':photourl}
-	data = {}
-	persistedFaceId = "" 
-	try:
-		conn = httplib.HTTPSConnection(FaceURL)
-		conn.request("POST", ("/face/v1.0/persongroups/"+personGroupId+"/persons/"+personId+"/persistedFaces?%s") % params, json.dumps(body), headers)
-		response = conn.getresponse()
-		data = response.read()
-		persistedFaceId = json.loads(data).get("persistedFaceId")
-		conn.close()
+		try:
+			conn = httplib.HTTPSConnection(FaceURL)
+			conn.request("POST", ("/face/v1.0/persongroups/"+personGroupId+"/persons?%s") % params, json.dumps(body), headers)
+			response = conn.getresponse()
+			data = response.read()
+			personId = json.loads(data).get("personId")		
+			conn.close()
+			
+			f = open("personlist.txt")
+			f.write(personId +'\n')
+		except Exception as e:
+			print e
+			data = e
 		
-		f = open("facelist.txt")
-		f.write(persistedFaceId +'\n')
-	except Exception as e:
-		print e	
+		#Get Persisted ID 
+		body = {'url':photourl}
+		data = {}
+		persistedFaceId = "" 
+		try:
+			conn = httplib.HTTPSConnection(FaceURL)
+			conn.request("POST", ("/face/v1.0/persongroups/"+personGroupId+"/persons/"+personId+"/persistedFaces?%s") % params, json.dumps(body), headers)
+			response = conn.getresponse()
+			data = response.read()
+			persistedFaceId = json.loads(data).get("persistedFaceId")
+			conn.close()
+			
+			f = open("facelist.txt")
+			f.write(persistedFaceId +'\n')
+		except Exception as e:
+			print e	
 	return render(request, 'sign_up.html',{'person':personId,'data':persistedFaceId})
 	
 def renderSearchPage(request):
@@ -82,12 +84,14 @@ def renderSearchPage(request):
 	url = ''
 	#Judge the mode 
 	if(mode == 'shot'):
+		headers = {	'Content-Type': 'application/octet-stream', 'Ocp-Apim-Subscription-Key': subscriptionKey}
 		url = base64.b64decode(photourl)
-		logging.debug(url)
+		#url = photourl
 	elif(mode == 'photo'):
 		url = photourl
 	else:
 		url = ''
+	
 	#Get the user's present face ID
 	faceID = ''
 	tmp = ''
@@ -96,6 +100,7 @@ def renderSearchPage(request):
     'returnFaceLandmarks': 'false',
     'returnFaceAttributes': 'age,gender',
 	})
+	
 	body ={'url':url}
 	try:
 		conn = httplib.HTTPSConnection(FaceURL)

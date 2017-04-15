@@ -79,7 +79,7 @@
 
          document.getElementById("paizhao").addEventListener("click",function(){  
 			context.drawImage(video,0,0,640,480);  
-			var imgData=canvas.toDataURL();
+			var imgData=canvas.toDataURL("image/png");
 			imgData = imgData.substring(22);
 			alert(imgData);
 			var shotData = document.getElementById("shotData");

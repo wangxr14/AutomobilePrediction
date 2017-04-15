@@ -11,9 +11,13 @@
 <body>
 <br><br><br>
 <div class="container">
-person ID : {{person}}
-<br>
-persisted face ID : {{data}}
+<form method="GET" action="/sign_up">
+<h2 class="pos_abs"> Sign Up Now </h2>
+    <input type="text" name="username" class="pos_abs">User name</input>
+	<input type="text" name="photourl" class="pos_abs">Your photo</input>
+	<input type="hidden" name="mode" value="signup"/>
+    <input type="submit" class="pos_abs2"/>
+</form>
 <form method="GET" action="/">
 	<button class="btn btn-primary" id="backBtn">Back</button>
 </form>	
