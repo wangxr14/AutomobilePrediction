@@ -182,7 +182,7 @@ def renderSearchPage(request):
 		return render(request, 'searchPage.html',{"personlist":personlist,"faceList":tmp,"isIdentical":data})
 	else:
 		
-		return render(request, 'login_face.html',{"logininfo":"login failed! Data:"+data+'     Tmp1:'+tmp1+'   TMP2:'+tmp2+'   TMP3:'+tmp3})
+		return render(request, 'login_face.html',{"logininfo":"login failed! Data:"+data+'     Tmp:'+tmp+'   TMP2:'+tmp2+'   TMP3:'+tmp3})
 		
 def renderResult(request):
 	make = request.GET.get('make','')
