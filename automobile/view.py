@@ -125,6 +125,7 @@ def renderSearchPage(request):
 		body ={'url':url}
 		try:
 			conn = httplib.HTTPSConnection(FaceURL)
+			tmp1=json.dumps(body)
 			conn.request("POST", "/face/v1.0/detect?%s" % params, json.dumps(body), headers)
 			response = conn.getresponse()
 			data = response.read()
@@ -182,7 +183,7 @@ def renderSearchPage(request):
 		return render(request, 'searchPage.html',{"personlist":personlist,"faceList":tmp,"isIdentical":data})
 	else:
 		
-		return render(request, 'login_face.html',{"logininfo":"login failed! Data:"+data+'     Tmp:'+tmp+'   TMP2:'+tmp2+'   TMP3:'+tmp3})
+		return render(request, 'login_face.html',{"logininfo":"login failed! Data:"+data+'     Tmp:'+tmp+'   TMP1:'+tmp1+'   TMP2:'+tmp2+'   TMP3:'+tmp3 + '  MODE:'+mode})
 		
 def renderResult(request):
 	make = request.GET.get('make','')
