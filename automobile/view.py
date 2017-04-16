@@ -112,7 +112,7 @@ def renderSearchPage(request):
 			conn.request("POST", "/face/v1.0/detect?%s" % params, body, headers)
 			response = conn.getresponse()
 			data = response.read()
-			return HttpResponse(data)
+			#return HttpResponse(data)
 			tmp = data
 			conn.close()
 			if(len(json.loads(data))>0):
@@ -144,43 +144,43 @@ def renderSearchPage(request):
 		
 		
 	#Get person list
-	#personlist = []
-	#body ={}
-	#data=''
-	#params = urllib.urlencode({})
-	#try:
-	#	conn = httplib.HTTPSConnection(FaceURL)
-	#	conn.request("GET", ("/face/v1.0/persongroups/"+personGroupId+"/persons?%s") % params, json.dumps(body), headers)
-	#	response = conn.getresponse()
-	#	data = response.read()
-	#	tmplist=data
-	#	conn.close()
+	personlist = []
+	body ={}
+	data=''
+	params = urllib.urlencode({})
+	try:
+		conn = httplib.HTTPSConnection(FaceURL)
+		conn.request("GET", ("/face/v1.0/persongroups/"+personGroupId+"/persons?%s") % params, json.dumps(body), headers)
+		response = conn.getresponse()
+		data = response.read()
+		tmplist=data
+		conn.close()
 		
-	#	personlist = json.loads(data)
+		personlist = json.loads(data)
 		
-	#except Exception as e:
-	#	tmplist= str(e)
+	except Exception as e:
+		tmplist= str(e)
 	
 	#verify
 	isIdentical = False
-	#data = ''
-	#for i in personlist:
-	#	pId = i.get("personId")
-	#	body = {"faceId":faceID,"personId":pId,"personGroupId":personGroupId}
-	#	data = '' 
-	#	try:
-	#		conn = httplib.HTTPSConnection(FaceURL)
-	#		tmp2 = json.dumps(body)
-	#		conn.request("POST", "/face/v1.0/verify?%s" % params, json.dumps(body), headers)
-	#		response = conn.getresponse()
-	#		data = response.read()
-	#		tmp3=data
-	#		isIdentical = json.loads(data).get("isIdentical")		
-	#		if(isIdentical): 
-	#			break
-	#		conn.close()
-	#	except Exception as e:
-	#		tmp3= str(e)
+	data = ''
+	for i in personlist:
+		pId = i.get("personId")
+		body = {"faceId":faceID,"personId":pId,"personGroupId":personGroupId}
+		data = '' 
+		try:
+			conn = httplib.HTTPSConnection(FaceURL)
+			tmp2 = json.dumps(body)
+			conn.request("POST", "/face/v1.0/verify?%s" % params, json.dumps(body), headers)
+			response = conn.getresponse()
+			data = response.read()
+			tmp3=data
+			isIdentical = json.loads(data).get("isIdentical")		
+			if(isIdentical): 
+				break
+			conn.close()
+		except Exception as e:
+			tmp3= str(e)
 	if(isIdentical):
 		return render(request, 'searchPage.html',{"personlist":personlist,"faceList":tmp,"isIdentical":data})
 	else:
