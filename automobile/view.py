@@ -91,6 +91,8 @@ def renderSearchPage(request):
 	faceID = ''
 	tmp = ''
 	tmp1= ''
+	tmp2=''
+	tmp3=''
 	params = urllib.urlencode({
     'returnFaceId': 'true',
     'returnFaceLandmarks': 'false',
@@ -149,6 +151,7 @@ def renderSearchPage(request):
 		conn.request("GET", ("/face/v1.0/persongroups/"+personGroupId+"/persons?%s") % params, json.dumps(body), headers)
 		response = conn.getresponse()
 		data = response.read()
+		tmp2=data
 		conn.close()
 		
 		personlist = json.loads(data)
@@ -168,6 +171,7 @@ def renderSearchPage(request):
 			conn.request("POST", "/face/v1.0/verify?%s" % params, json.dumps(body), headers)
 			response = conn.getresponse()
 			data = response.read()
+			tmp3=data
 			isIdentical = json.loads(data).get("isIdentical")		
 			if(isIdentical): 
 				break
@@ -178,7 +182,7 @@ def renderSearchPage(request):
 		return render(request, 'searchPage.html',{"personlist":personlist,"faceList":tmp,"isIdentical":data})
 	else:
 		
-		return render(request, 'login_face.html',{"logininfo":"login failed! Data:"+data+'     Tmp:'+tmp1})
+		return render(request, 'login_face.html',{"logininfo":"login failed! Data:"+data+'     Tmp1:'+tmp1+'   TMP2:'+tmp2+'   TMP3:'+tmp3})
 		
 def renderResult(request):
 	make = request.GET.get('make','')
