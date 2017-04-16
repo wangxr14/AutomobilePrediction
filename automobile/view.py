@@ -107,7 +107,7 @@ def renderSearchPage(request):
 		
 	#Judge the mode 
 	if(mode == 'shot'):
-		headers = {	'Content-Type': 'application/json', 'Ocp-Apim-Subscription-Key': subscriptionKey}
+		#headers = {	'Content-Type': 'application/json', 'Ocp-Apim-Subscription-Key': subscriptionKey}
 		imgData = base64.b64decode(photourl)
 		file = open(picUrl,'wb')
 		file.write(imgData)
