@@ -90,6 +90,7 @@ def renderSearchPage(request):
 	#Get the user's present face ID
 	faceID = ''
 	tmp = ''
+	tmp1= ''
 	params = urllib.urlencode({
     'returnFaceId': 'true',
     'returnFaceLandmarks': 'false',
@@ -107,6 +108,7 @@ def renderSearchPage(request):
 		body ={'url':imgUrl}
 		try:
 			conn = httplib.HTTPSConnection(FaceURL)
+			tmp1=json.dumps(body)
 			conn.request("POST", "/face/v1.0/detect?%s" % params, json.dumps(body), headers)
 			response = conn.getresponse()
 			data = response.read()
@@ -176,7 +178,7 @@ def renderSearchPage(request):
 		return render(request, 'searchPage.html',{"personlist":personlist,"faceList":tmp,"isIdentical":data})
 	else:
 		
-		return render(request, 'login_face.html',{"logininfo":"login failed! Data:"+data+'     Tmp:'+tmp})
+		return render(request, 'login_face.html',{"logininfo":"login failed! Data:"+data+'     Tmp:'+tmp1})
 		
 def renderResult(request):
 	make = request.GET.get('make','')
