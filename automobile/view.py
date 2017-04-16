@@ -80,7 +80,7 @@ def signUp(request):
 			
 		except Exception as e:
 			print e	
-	return render(request, 'sign_up.html',{'person':mode,'data':persistedFaceId})
+	return render(request, 'sign_up.html',{'person':mode,'You get your face ID: ':persistedFaceId})
 	
 def renderSearchPage(request):
 	photourl = request.POST.get('photourl','')
@@ -184,10 +184,10 @@ def renderSearchPage(request):
 		except Exception as e:
 			tmp3= str(e)
 	if(isIdentical):
-		return render(request, 'searchPage.html',{"personlist":personlist,"faceList":tmp,"isIdentical":data})
+		return render(request, 'searchPage.html',{"faceList":tmp})
 	else:
 		
-		return render(request, 'login_face.html',{"logininfo":"login failed! Data:"+data+'     Tmp:'+tmp+'   TMP1:'+tmp1+'   TMP2:'+tmp2+'   TMPLIST:'+tmplist+'   TMP3:'+tmp3 + '  MODE:'+mode})
+		return render(request, 'login_face.html',{"logininfo":"login failed! Data:"+data+'     Tmp:'+tmp+ '  MODE:'+mode})
 		
 def renderResult(request):
 	make = request.GET.get('make','')
