@@ -121,7 +121,7 @@ def renderSearchPage(request):
 			data = response.read()
 			tmp = data
 			conn.close()
-			faceID = json.loads(data)[0].get("faceId")
+			#faceID = json.loads(data)[0].get("faceId")
 			
 		except Exception as e:
 			tmp = str(e)
