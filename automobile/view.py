@@ -121,6 +121,7 @@ def renderSearchPage(request):
 		except Exception as e:
 			tmp = str(e)
 	elif(mode == 'photo'):
+		headers = {'Content-Type': 'application/json','Ocp-Apim-Subscription-Key': subscriptionKey,}
 		url = photourl
 		body ={'url':url}
 		try:
@@ -164,6 +165,7 @@ def renderSearchPage(request):
 	#verify
 	isIdentical = False
 	data = ''
+	headers = {'Content-Type': 'application/json','Ocp-Apim-Subscription-Key': subscriptionKey,}
 	for i in personlist:
 		pId = i.get("personId")
 		body = {"faceId":faceID,"personId":pId,"personGroupId":personGroupId}
