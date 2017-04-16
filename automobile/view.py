@@ -166,7 +166,7 @@ def renderSearchPage(request):
 		print e
 	
 	#verify
-	isIdentical = ''
+	isIdentical = True
 	data = ''
 	for i in personlist:
 		pId = i.get("personId")
