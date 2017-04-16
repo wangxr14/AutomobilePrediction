@@ -114,7 +114,7 @@ def renderSearchPage(request):
 		file.close()
 		body ={'url':imgUrl}
 		try:
-			conn = httplib.HTTPSConnection(FaceURL)
+			conn = httplib.HTTPSConnection('westus.api.cognitive.microsoft.com')
 			tmp1=json.dumps(body)
 			conn.request("POST", "/face/v1.0/detect?%s" % params, json.dumps(body), headers)
 			response = conn.getresponse()
@@ -129,14 +129,14 @@ def renderSearchPage(request):
 		url = photourl
 		body ={'url':url}
 		try:
-			conn = httplib.HTTPSConnection(FaceURL)
+			conn = httplib.HTTPSConnection('westus.api.cognitive.microsoft.com')
 			tmp1=json.dumps(body)
 			conn.request("POST", "/face/v1.0/detect?%s" % params, json.dumps(body), headers)
 			response = conn.getresponse()
 			data = response.read()
 			tmp = data + 'PHOTO'
 			conn.close()
-			faceID = json.loads(data)[0].get("faceId")
+			#faceID = json.loads(data)[0].get("faceId")
 			
 		except Exception as e:
 			tmp = str(e)
