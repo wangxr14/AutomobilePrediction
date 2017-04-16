@@ -99,16 +99,17 @@ def renderSearchPage(request):
 		
 	#Judge the mode 
 	if(mode == 'shot'):
-		headers = {	'Content-Type': 'application/json', 'Ocp-Apim-Subscription-Key': subscriptionKey}
+		headers = {	'Content-Type': 'application/octet-stream', 'Ocp-Apim-Subscription-Key': subscriptionKey}
 		imgData = base64.b64decode(photourl)
 		file = open(picUrl,'wb')
 		file.write(imgData)
 		file.close()
-		body ={'url':imgUrl}
+		#body ={'url':imgUrl}
+		body=imgData
 		try:
 			conn = httplib.HTTPSConnection('westus.api.cognitive.microsoft.com')
-			tmp1=json.dumps(body)
-			conn.request("POST", "/face/v1.0/detect?%s" % params, json.dumps(body), headers)
+			#tmp1=json.dumps(body)
+			conn.request("POST", "/face/v1.0/detect?%s" % params, body, headers)
 			response = conn.getresponse()
 			data = response.read()
 			return HttpResponse(data)
