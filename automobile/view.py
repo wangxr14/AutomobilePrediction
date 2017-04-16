@@ -45,7 +45,11 @@ def signUp(request):
 	data = {}
 	personId = "" 
 	persistedFaceId = ""
-	params = urllib.urlencode({})
+	params = urllib.urlencode({
+    'returnFaceId': 'true',
+    'returnFaceLandmarks': 'false',
+    'returnFaceAttributes': 'age,gender',
+	})
 
 	#Get person ID
 	body = {'name':username,'userData':'New User'}
@@ -93,6 +97,7 @@ def renderSearchPage(request):
 	tmp1= ''
 	tmp2=''
 	tmp3=''
+	tmplist=''
 	params = urllib.urlencode({
     'returnFaceId': 'true',
     'returnFaceLandmarks': 'false',
@@ -152,6 +157,7 @@ def renderSearchPage(request):
 		conn.request("GET", ("/face/v1.0/persongroups/"+personGroupId+"/persons?%s") % params, json.dumps(body), headers)
 		response = conn.getresponse()
 		data = response.read()
+		tmplist=data
 		conn.close()
 		
 		personlist = json.loads(data)
@@ -183,7 +189,7 @@ def renderSearchPage(request):
 		return render(request, 'searchPage.html',{"personlist":personlist,"faceList":tmp,"isIdentical":data})
 	else:
 		
-		return render(request, 'login_face.html',{"logininfo":"login failed! Data:"+data+'     Tmp:'+tmp+'   TMP1:'+tmp1+'   TMP2:'+tmp2+'   TMP3:'+tmp3 + '  MODE:'+mode})
+		return render(request, 'login_face.html',{"logininfo":"login failed! Data:"+data+'     Tmp:'+tmp+'   TMP1:'+tmp1+'   TMP2:'+tmp2+'   TMPLIST:'+tmplist+'   TMP3:'+tmp3 + '  MODE:'+mode})
 		
 def renderResult(request):
 	make = request.GET.get('make','')
