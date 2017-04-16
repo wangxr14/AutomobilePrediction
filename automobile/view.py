@@ -124,7 +124,7 @@ def renderSearchPage(request):
 			faceID = json.loads(data)[0].get("faceId")
 			
 		except Exception as e:
-			tmp = e
+			tmp = str(e)
 	elif(mode == 'photo'):
 		url = photourl
 		body ={'url':url}
@@ -139,7 +139,7 @@ def renderSearchPage(request):
 			faceID = json.loads(data)[0].get("faceId")
 			
 		except Exception as e:
-			tmp = e
+			tmp = str(e)
 	else:
 		url = ''
 	
@@ -163,7 +163,7 @@ def renderSearchPage(request):
 		personlist = json.loads(data)
 		
 	except Exception as e:
-		tmplist= e
+		tmplist= str(e)
 	
 	#verify
 	isIdentical = False
@@ -184,7 +184,7 @@ def renderSearchPage(request):
 				break
 			conn.close()
 		except Exception as e:
-			tmp3= e
+			tmp3= str(e)
 	if(isIdentical):
 		return render(request, 'searchPage.html',{"personlist":personlist,"faceList":tmp,"isIdentical":data})
 	else:
