@@ -121,7 +121,8 @@ def renderSearchPage(request):
 			data = response.read()
 			tmp = data
 			conn.close()
-			#faceID = json.loads(data)[0].get("faceId")
+			if(len(json.loads(data))>0):
+				faceID = json.loads(data)[0].get("faceId")
 			
 		except Exception as e:
 			tmp = str(e)
@@ -136,7 +137,8 @@ def renderSearchPage(request):
 			data = response.read()
 			tmp = data + 'PHOTO'
 			conn.close()
-			#faceID = json.loads(data)[0].get("faceId")
+			if(len(json.loads(data))>0):
+				faceID = json.loads(data)[0].get("faceId")
 			
 		except Exception as e:
 			tmp = str(e)
