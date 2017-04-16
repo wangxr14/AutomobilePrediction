@@ -111,6 +111,7 @@ def renderSearchPage(request):
 			conn.request("POST", "/face/v1.0/detect?%s" % params, json.dumps(body), headers)
 			response = conn.getresponse()
 			data = response.read()
+			return HttpResponse(data)
 			tmp = data
 			conn.close()
 			if(len(json.loads(data))>0):
