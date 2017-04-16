@@ -111,7 +111,7 @@ def renderSearchPage(request):
 			conn.request("POST", "/face/v1.0/detect?%s" % params, json.dumps(body), headers)
 			response = conn.getresponse()
 			data = response.read()
-			tmp = response
+			tmp = str(response)
 			conn.close()
 			if(len(json.loads(data))>0):
 				faceID = json.loads(data)[0].get("faceId")
