@@ -151,7 +151,6 @@ def renderSearchPage(request):
 		conn.request("GET", ("/face/v1.0/persongroups/"+personGroupId+"/persons?%s") % params, json.dumps(body), headers)
 		response = conn.getresponse()
 		data = response.read()
-		tmp2=data
 		conn.close()
 		
 		personlist = json.loads(data)
@@ -168,6 +167,7 @@ def renderSearchPage(request):
 		data = '' 
 		try:
 			conn = httplib.HTTPSConnection(FaceURL)
+			tmp2 = json.dumps(body)
 			conn.request("POST", "/face/v1.0/verify?%s" % params, json.dumps(body), headers)
 			response = conn.getresponse()
 			data = response.read()
