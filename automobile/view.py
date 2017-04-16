@@ -24,7 +24,7 @@ headers = {
 		# Request headers
 		'Content-Type': 'application/json',
 		'Ocp-Apim-Subscription-Key': subscriptionKey,
-	}
+}
 	
 def login(request):
     return render(request, 'login.html')
@@ -45,11 +45,7 @@ def signUp(request):
 	data = {}
 	personId = "" 
 	persistedFaceId = ""
-	params = urllib.urlencode({
-    'returnFaceId': 'true',
-    'returnFaceLandmarks': 'false',
-    'returnFaceAttributes': 'age,gender',
-	})
+	params = urllib.urlencode({'returnFaceId': 'true','returnFaceLandmarks': 'false','returnFaceAttributes': 'age,gender',})
 
 	#Get person ID
 	body = {'name':username,'userData':'New User'}
@@ -98,11 +94,7 @@ def renderSearchPage(request):
 	tmp2=''
 	tmp3=''
 	tmplist=''
-	params = urllib.urlencode({
-    'returnFaceId': 'true',
-    'returnFaceLandmarks': 'false',
-    'returnFaceAttributes': 'age,gender',
-	})
+	params = urllib.urlencode({'returnFaceId': 'true','returnFaceLandmarks': 'false','returnFaceAttributes': 'age,gender',})
 	
 		
 	#Judge the mode 
