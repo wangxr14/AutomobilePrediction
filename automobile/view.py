@@ -205,12 +205,11 @@ def renderResult(request):
 
 					"input1":
 					{
-						"ColumnNames": ["symboling", "normalized-losses", "make", "fuel-type", "aspiration", "num-of-doors", "body-style", "drive-wheels", "engine-location", "wheel-base", "length", "width", "height", "curb-weight", "engine-type", "num-of-cylinders", "engine-size", "fuel-system", "bore", "stroke", "compression-ratio", "horsepower", "peak-rpm", "city-mpg", "highway-mpg", "price"],
-						"Values": [ [ "0", "0", "value", "value", "value", "value", "value", "value", "value", "0", "0", "0", "0", "0", "value", "value", "0", "value", "0", "0", "0", "0", "0", "0", "0", "0" ], [ "0", "0", make, "value", "value", "value", bodystyle, "value", "value", wheelbase, "0", "0", "0", "0", "value", "value", enginesize, "value", "0", "0", "0", horsepower, peakrpm, "0", highwaympg, price ],]
-					},        },
-				"GlobalParameters": {
+						"make":make,"body-style":bodystyle, "wheel-base":wheelbase, "engine-size":enginesize,  "horsepower":horsepower, "peak-rpm":peakrpm, "highway-mpg":highwaympg, "price":price
+					},        
+			},
+			"GlobalParameters": {}
 	}
-		}
 
 	body = str.encode(json.dumps(data))
 
