@@ -212,7 +212,7 @@ def renderResult(request):
 			"GlobalParameters": {}
 	}
 
-	body = json.dumps(data)
+	body = str.encode(json.dumps(data))
 
 	url = 'https://ussouthcentral.services.azureml.net/workspaces/cc42249fc9bf47c99258ff24cfdd4c01/services/65f0f43a352b4d73bfbc6d71ea273c90/execute?api-version=2.0&details=true'
 	api_key = '6rVIvDu+/KoeK25mZAyCWS0uhhq05HMy4SlzVrrpny+9Umj7vbw6aAAUY7uibk3HGKYkhqJ+eE/FQSfOfHkF7g==' # Replace this with the API key for the web service
