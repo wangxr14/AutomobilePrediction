@@ -205,7 +205,8 @@ def renderResult(request):
 
 					"input1":
 					{
-						"make":make,"body-style":bodystyle, "wheel-base":wheelbase, "engine-size":enginesize,  "horsepower":horsepower, "peak-rpm":peakrpm, "highway-mpg":highwaympg, "price":price
+						"ColumnNames": ["make", "body-style", "wheel-base", "engine-size","horsepower", "peak-rpm", "highway-mpg", "price"],
+                    "Values": [ [ make,bodystyle,wheelbase,enginesize,horsepower,peakrpm,highwaympg,price ], [ "value", "value", "0", "0", "0", "0", "0", "0" ], ]
 					},        
 			},
 			"GlobalParameters": {}
