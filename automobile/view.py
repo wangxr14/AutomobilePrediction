@@ -193,7 +193,7 @@ def renderResult(request):
 	make = request.GET.get('make','')
 	bodystyle = request.GET.get('bodystyle','')
 	wheelbase = request.GET.get('wheelbase','')
-	enginesize = request.GET.get('enginesize','')
+	enginesize = request.GET.get('engine-size','')
 	horsepower = request.GET.get('horsepower','')
 	peakrpm = request.GET.get('peakrpm','')
 	highwaympg = request.GET.get('highwaympg','')
@@ -240,7 +240,7 @@ def renderResult(request):
 		print(error.info())
 
 		print(json.loads(error.read()))                 
-        return render(request, 'result.html',{'result':result})
+        return render(request, 'result.html',{'result':'input:'+make+' '+bodystyle+' '+wheelbase+' '+enginesize+' '+horsepower+' '+peakrpm+' '+highwaympg+' '+price+' '+' result: 'result})
 
 def getPic(request):
 	image_data = open(picUrl,"rb").read()
