@@ -231,7 +231,7 @@ def renderResult(request):
 		
 		resultlist = json.loads(result).get("Results").get("output1").get("value").get("Values")[0]
 		length = len(resultlist)
-		#result = resultlist[length-1]+'   '+resultlist[length-2]
+		result = resultlist[length-1]+'   '+resultlist[length-2]
 		
 		
 	except urllib2.HTTPError, error:
@@ -241,7 +241,7 @@ def renderResult(request):
 		print(error.info())
 
 		print(json.loads(error.read()))                 
-        return render(request, 'result.html',{'result':'input:'+make+' '+bodystyle+' '+wheelbase+' '+enginesize+' '+horsepower+' '+peakrpm+' '+highwaympg+' '+price+' \n'+'body:'+body+'\n result: '+result})
+        return render(request, 'result.html',{'result':result})
 
 def getPic(request):
 	image_data = open(picUrl,"rb").read()
