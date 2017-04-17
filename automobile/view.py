@@ -231,7 +231,7 @@ def renderResult(request):
 		
 		resultlist = json.loads(result).get("Results").get("output1").get("value").get("Values")[0]
 		length = len(resultlist)
-		result = resultlist[length-1]
+		result = resultlist[length-1]+'   '+resultlist[length-2]
 		
 	except urllib2.HTTPError, error:
 		print("The request failed with status code: " + str(error.code))
