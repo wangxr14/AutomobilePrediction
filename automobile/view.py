@@ -240,7 +240,7 @@ def renderResult(request):
 		print(error.info())
 
 		print(json.loads(error.read()))                 
-        return render(request, 'result.html',{'result':'input:'+make+' '+bodystyle+' '+wheelbase+' '+enginesize+' '+horsepower+' '+peakrpm+' '+highwaympg+' '+price+' '+' result: '+result})
+        return render(request, 'result.html',{'result':'input:'+make+' '+bodystyle+' '+wheelbase+' '+enginesize+' '+horsepower+' '+peakrpm+' '+highwaympg+' '+price+' \n'+'body:'+body+'\n result: '+result})
 
 def getPic(request):
 	image_data = open(picUrl,"rb").read()
